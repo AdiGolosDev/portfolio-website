@@ -1,11 +1,56 @@
 {% extends "base.html" %}
 {% block title %}About — Adi Golos{% endblock %}
+
 {% block content %}
-<main class="sections">
-  <div class="container">
-    <h1 style="font-family:'Fraunces', serif;">About</h1>
-    <p style="color:var(--subtext);">Coming soon.</p>
+<main class="about-terminal-page">
+
+  <div class="term-window term-window-lg">
+    <div class="term-titlebar">
+      <span class="term-dot r"></span>
+      <span class="term-dot y"></span>
+      <span class="term-dot g"></span>
+      <span class="term-label">adi@portfolio: ~/about</span>
+    </div>
+
+    <div class="term-body term-body-lg">
+
+      <div class="term-line term-line-dim">
+        <span class="prompt-text">adi@portfolio ~/about %</span> clear
+      </div>
+
+      <div class="term-line">
+        <span class="prompt-text">adi@portfolio ~/about %</span> ls
+      </div>
+      <div class="ls-listing">
+        {% for filename in filenames %}
+          <a class="ls-file" href="{{ url_for('about', cmd='cat ' ~ filename) }}">{{ filename }}</a>
+        {% endfor %}
+      </div>
+
+      {% if cmd != 'clear' %}
+        <div class="term-line term-line-spaced">
+          <span class="prompt-text">adi@portfolio ~/about %</span> {{ cmd }}
+        </div>
+        {% if result %}
+          <pre class="term-output {{ 'term-output-error' if result.error else '' }}">{{ result.text }}</pre>
+        {% endif %}
+      {% endif %}
+
+      <form method="get" action="{{ url_for('about') }}" class="term-input-line">
+        <span class="prompt-text">adi@portfolio ~/about %</span>
+        <input
+          type="text"
+          name="cmd"
+          class="term-input"
+          placeholder="cat how_to_use.txt"
+          autocomplete="off"
+          spellcheck="false"
+          autofocus
+        >
+      </form>
+
+    </div>
   </div>
+
 </main>
 {% endblock %}
- 

@@ -1,5 +1,5 @@
 :root{
-  /* Catppuccin Mocha theme colors */
+  /* Catppuccin Mocha */
   --crust:    #11111b;
   --mantle:   #181825;
   --base:     #1e1e2e;
@@ -9,6 +9,7 @@
   --text:     #cdd6f4;
   --subtext:  #a6adc8;
 
+  /* the two voices */
   --code-a:   #89b4fa; /* blue */
   --code-b:   #74c7ec; /* sapphire */
   --write-a:  #fab387; /* peach */
@@ -17,11 +18,8 @@
   /* contested ground */
   --thread:   #f9e2af; /* yellow */
   --redline:  #f38ba8; /* red, for the strike marks */
-  /* idk if i need these two above: */
 
-
-
-  /* python syntax colors */
+  /* python token colors (kept true to real highlighting, independent of pane accents) */
   --py-kw:      #cba6f7; /* mauve */
   --py-fn:      #89b4fa; /* blue */
   --py-param:   #fab387; /* peach */
@@ -29,13 +27,17 @@
 }
 
 *{ box-sizing:border-box; }
-html{ scroll-behavior:smooth; }
+html{ scroll-behavior:smooth; height:100%; }
 
 body{
   background:var(--crust);
   color:var(--text);
   font-family:'Source Sans 3', sans-serif;
   line-height:1.6;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
 }
 
 a{ color:inherit; }
@@ -167,6 +169,7 @@ a{ color:inherit; }
 }
 @keyframes blink{ 50%{ opacity:0; } }
 
+/* WRITE PANE — a page mid-turn */
 .hero-pane.prose{
   background:
     linear-gradient(to right, rgba(0,0,0,0.35), transparent 12%),
@@ -181,7 +184,7 @@ a{ color:inherit; }
   .hero-pane.prose{ padding-left:3.5rem; transform:none; box-shadow:none; }
 }
 
-/* TODO: still doesn't look the best */
+/* the folded corner — dog-ear, like a page mid-turn */
 .page-fold{
   position:absolute;
   top:0; right:0;
@@ -210,7 +213,6 @@ a{ color:inherit; }
   color:var(--write-a);
   margin-bottom:1rem;
 }
-
 .hero-pane.prose h1{
   font-family:'Fraunces', serif;
   font-weight:700;
@@ -220,14 +222,13 @@ a{ color:inherit; }
   margin-bottom:1rem;
   letter-spacing:-0.01em;
 }
-
 .hero-pane.prose p{
   color:var(--subtext);
   max-width:38ch;
   font-size:0.98rem;
 }
 
-/* python-looking code block*/
+/* a real, syntax-colored python snippet interrupting the page */
 .py-block{
   display:block;
   font-family:'JetBrains Mono', monospace;
@@ -345,11 +346,120 @@ a{ color:inherit; }
 .card-link.code-flavor h3{ font-family:'JetBrains Mono', monospace; font-weight:700; font-size:1.15rem; }
 .card-link p{ color:var(--subtext); font-size:0.95rem; margin-bottom:0; }
 
+/* ---------- ABOUT PAGE: interactive terminal ---------- */
+.about-terminal-page{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:safe center;
+  padding:3.5rem 1.25rem;
+}
+
+.term-window-lg{
+  width:100%;
+  max-width:900px;
+  margin:0 auto;
+}
+
+.term-body-lg{
+  padding:2.25rem 2.5rem 2.5rem;
+  font-family:'JetBrains Mono', monospace;
+  font-size:1.02rem;
+  min-height:360px;
+}
+
+.term-line{
+  color:var(--text);
+  margin-bottom:0.9rem;
+}
+.term-line-dim{
+  color:var(--overlay0);
+}
+.term-line-spaced{
+  margin-top:1.4rem;
+}
+.prompt-text{
+  color:var(--code-a);
+  margin-right:0.4rem;
+}
+
+.ls-listing{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.5rem 1.6rem;
+  margin-bottom:0.5rem;
+}
+.ls-file{
+  color:var(--write-a);
+  text-decoration:none;
+  transition:color .15s ease, text-shadow .15s ease;
+}
+.ls-file:hover{
+  color:var(--thread);
+  text-shadow:0 0 10px rgba(249,226,175,0.5);
+}
+
+.term-output{
+  margin:0.5rem 0 0;
+  color:var(--subtext);
+  font-family:'JetBrains Mono', monospace;
+  font-size:0.92rem;
+  white-space:pre-wrap;
+  line-height:1.6;
+}
+.term-output-error{
+  color:var(--redline);
+}
+
+.term-input-line{
+  display:flex;
+  align-items:center;
+  margin-top:1.4rem;
+}
+.term-input{
+  flex:1;
+  background:transparent;
+  border:none;
+  outline:none;
+  color:var(--text);
+  font-family:'JetBrains Mono', monospace;
+  font-size:0.95rem;
+  caret-color:var(--thread);
+}
+.term-input::placeholder{
+  color:var(--overlay0);
+}
+
 /* ---------- FOOTER ---------- */
 footer{
+  margin-top:auto;
   padding:2.25rem 0;
   text-align:center;
   color:var(--overlay0);
   font-size:0.85rem;
   background:var(--crust);
 }
+footer .footer-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0.85rem;
+  flex-wrap:wrap;
+}
+footer .gh-link{
+  display:inline-flex;
+  align-items:center;
+  opacity:0.55;
+  transition:opacity .15s ease, transform .15s ease;
+}
+footer .gh-link:hover{
+  opacity:0.95;
+  transform:translateY(-1px);
+}
+footer .gh-link svg{
+  width:18px;
+  height:18px;
+  fill:var(--overlay0);
+  transition:fill .15s ease;
+}
+footer .gh-link:hover svg{ fill:var(--code-a); }
