@@ -1,13 +1,27 @@
 import json
 import os
 import random
-from flask import Flask, render_template, request
+from dotenv import load_dotenv
+from flask import Flask, render_template, request, redirect, url_for, flash
 
+# forms + contact page + emails
+import smtplib
+import fcntl
+from datetime import datetime, timezone
+from email.message import EmailMessage
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, HiddenField
+from wtforms.validators import DataRequired, Email, Length
+# --------------------
+
+load_dotenv()
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-change-me") # contact
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ABOUT_FILES_PATH = os.path.join(BASE_DIR, "data", "about_files.json")
 QUOTES_PATH = os.path.join(BASE_DIR, "data", "quotes.json")
+CONTACT_PATH = os.path.join(BASE_DIR, "data", "contacts.json") # contact
 
 def load_about_files():
     with open(ABOUT_FILES_PATH, "r", encoding="utf-8") as f:
@@ -48,6 +62,79 @@ def run_command(cmd, files):
  
     return {"text": f"zsh: command not found: {cmd} \n(sorry this isn't a real terminal)", "error": True}
 
+# contact stuff
+# ............
+
+class ContactForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired(), Length(max=128)])
+    email = StringField("Email", validators=[DataRequired(), Email(), Length(max=128)])
+    subject = StringField("Subject", validators=[DataRequired(), Length(max=128)])
+    message = TextAreaField("Message", validators=[DataRequired(), Length(max=2000)])
+    company = HiddenField()
+
+def save_contact(name, email, subject, message):
+    os.makedirs(os.path.dirname(CONTACT_PATH), exist_ok=True)
+    if not os.path.exists(CONTACT_PATH):
+        with open(CONTACT_PATH, "w", encoding="utf-8") as f:
+            f.write("{}")
+
+    with open(CONTACT_PATH, "r+", encoding="utf-8") as f:
+        fcntl.flock(f, fcntl.LOCK_EX)
+        f.seek(0)
+        content = f.read()
+        contacts = json.loads(content) if content else {}
+
+        key = email.strip().lower()
+        is_new = key not in contacts
+        entry = {
+            "subject": subject,
+            "message": message,
+            "sent_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+        if is_new:
+            contacts[key] = {
+                "name": name,
+                "email": email,
+                "first_contacted": entry["sent_at"],
+                "messages": [entry],
+            }
+        else:
+            contacts[key]["messages"].append(entry)
+
+        f.seek(0)
+        f.truncate()
+        json.dump(contacts, f, indent=2)
+        fcntl.flock(f, fcntl.LOCK_UN)
+
+    return is_new
+
+
+SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(os.environ.get("SMTP_PORT", 465))
+SMTP_USER = os.environ.get("SMTP_USER")
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
+CONTACT_INBOX = os.environ.get("CONTACT_INBOX", SMTP_USER)
+
+def send_contact_email(name, email, subject, message):
+    if not SMTP_USER or not SMTP_PASSWORD:
+        print("SMTP not configured - skipping email send.")
+        return
+
+    msg = EmailMessage()
+    msg["Subject"] = f"[Portfolio Contact] {subject}"
+    msg["From"] = SMTP_USER
+    msg["To"] = CONTACT_INBOX
+    msg["Reply-To"] = email
+    msg.set_content(f"From: {name} <{email}>\n\n{message}")
+
+    with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
+        server.login(SMTP_USER, SMTP_PASSWORD)
+        server.send_message(msg)
+
+# ............
+
+
 @app.route("/")
 def index():
     quote = random.choice(load_quotes())
@@ -71,9 +158,22 @@ def csprojects():
 def readingwriting():
     return render_template("readingwriting.html")
 
-@app.route("/contact")
+# Updated form thing stuff :)
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    form = ContactForm()
+
+    if form.validate_on_submit():
+        if form.company.data:
+            return redirect(url_for("contact"))
+
+        save_contact(form.name.data, form.email.data, form.subject.data, form.message.data)
+        send_contact_email(form.name.data, form.email.data, form.subject.data, form.message.data)
+
+        flash("Message sent - thanks for reaching out, I'll get back to you as soon as I get the chance.", "success")
+        return redirect(url_for("contact"))
+    
+    return render_template("contact.html", form=form)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

@@ -1,10 +1,69 @@
-{% extends "base.html" %}
-{% block title %}Contact — Adi Golos{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Contact — Adi Golos{% endblock %} {%
+block content %}
 <main class="sections">
-  <div class="container">
-    <h1 style="font-family:'Fraunces', serif;">Contact</h1>
-    <p style="color:var(--subtext);">Coming soon.</p>
+  <div class="container contact-page">
+    <p class="eyebrow-lg">Get in touch</p>
+    <h1
+      style="
+        font-family: &quot;Fraunces&quot;, serif;
+        font-style: italic;
+        margin-bottom: 0.5rem;
+      "
+    >
+      Contact
+    </h1>
+    <p style="color: var(--subtext); max-width: 48ch; margin-bottom: 2.5rem">
+      Questions, offers, collaborations, or just want to say hi - write what's
+      on your mind below!
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% for
+    category, msg in messages %}
+    <p class="flash flash-{{ category }}">{{ msg }}</p>
+    {% endfor %} {% endwith %}
+
+    <form method="POST" class="contact-form" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="hp-field" aria-hidden="true">
+        {{ form.company.label }} {{ form.company() }}
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          {{ form.name.label(class_="field-label") }} {{
+          form.name(class_="field-input", placeholder="Jane Doe") }} {% for
+          error in form.name.errors %}<span class="field-error"
+            >{{ error }}</span
+          >{% endfor %}
+        </div>
+        <div class="field">
+          {{ form.email.label(class_="field-label") }} {{
+          form.email(class_="field-input", placeholder="jane@example.com") }} {%
+          for error in form.email.errors %}<span class="field-error"
+            >{{ error }}</span
+          >{% endfor %}
+        </div>
+      </div>
+
+      <div class="field">
+        {{ form.subject.label(class_="field-label") }} {{
+        form.subject(class_="field-input", placeholder="What's this about?") }}
+        {% for error in form.subject.errors %}<span class="field-error"
+          >{{ error }}</span
+        >{% endfor %}
+      </div>
+
+      <div class="field">
+        {{ form.message.label(class_="field-label") }} {{
+        form.message(class_="field-input field-textarea", rows=6,
+        placeholder="Write your message...") }} {% for error in
+        form.message.errors %}<span class="field-error">{{ error }}</span>{%
+        endfor %}
+      </div>
+
+      <button type="submit" class="btn-send">Send message</button>
+    </form>
   </div>
 </main>
 {% endblock %}
