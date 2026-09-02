@@ -1,10 +1,8 @@
-{% extends "base.html" %}
- 
-{% block content %}
- 
+{% extends "base.html" %} {% block content %}
+
 <header class="hero">
   <div class="seam"></div>
- 
+
   <div class="hero-pane code">
     <div class="term-window">
       <div class="term-titlebar">
@@ -24,31 +22,40 @@ eternally vibe-coding this website<span class="cursor"></span></pre>
       </div>
     </div>
   </div>
- 
+
   <div class="hero-pane prose">
     <div class="page-fold"></div>
     <div>
       <h1>The life of Adi</h1>
-      <p>After spending years finding his interests, our protagonist decided on computer science, writing, and reading every book that falls into his hands. Today he spends his days with family and friends, reading, writing and coding snippets like these:
+      <p>
+        After spending years finding his interests, our protagonist decided on
+        computer science, writing, and reading every book that falls into his
+        hands. Today he spends his days with family and friends, reading,
+        writing and coding snippets like these:
       </p>
-      <pre class="py-block"><code><span class="py-kw">def</span> <span class="py-fn">create_10x_developer</span>(<span class="py-param">adi</span>):
+      <pre
+        class="py-block"
+      ><code><span class="py-kw">def</span> <span class="py-fn">create_10x_developer</span>(<span class="py-param">adi</span>):
     <span class="py-kw">pass</span>  <span class="py-comment"># I'll do it later, I'm reading</span></code></pre>
     </div>
     <span class="page-number">— 1 —</span>
   </div>
 </header>
- 
+
 <div class="quote-strip">
-  <blockquote>"We are guardians, but also a bunch of miserable wretches that are constantly fighting against threats and madness."</blockquote>
-  <cite>~ Lord of Mysteries, Cuttlefish that loves diving</cite>
-  <span class="quote-caption">quote randomly taken from my list of great quotes</span>
+  <span class="quote-caption">here's a random quote I like</span>
+  <br />
+  <blockquote>"{{ quote.quote }}"</blockquote>
+  <cite> ~ {{ quote.author }}</cite>
 </div>
- 
+
 <main class="sections">
   <div class="container">
-    <p class="eyebrow-lg"># eternal reader, aspiring writer, future sysadmin and a person always open to learning</p>
+    <p class="eyebrow-lg">
+      # eternal reader, aspiring writer, future sysadmin and a person always
+      open to learning
+    </p>
     <div class="row g-4">
- 
       <div class="col-md-6 col-lg-3">
         <a class="card-link" href="{{ url_for('about') }}">
           <span class="tag about">whoami</span>
@@ -56,23 +63,29 @@ eternally vibe-coding this website<span class="cursor"></span></pre>
           <p>Background, current focus, and how I got here.</p>
         </a>
       </div>
- 
+
       <div class="col-md-6 col-lg-3">
         <a class="card-link code-flavor" href="{{ url_for('csprojects') }}">
           <span class="tag it">code &amp; IT</span>
           <h3>Projects</h3>
-          <p>Courses, GitHub, small apps and games, and what I'm working toward next.</p>
+          <p>
+            Courses, GitHub, small apps and games, and what I'm working toward
+            next.
+          </p>
         </a>
       </div>
- 
+
       <div class="col-md-6 col-lg-3">
         <a class="card-link" href="{{ url_for('readingwriting') }}">
           <span class="tag write">reading &amp; writing</span>
           <h3>Writing</h3>
-          <p>An interactive graph containing books I've read and reviewed. Also my own stories that are WIP.</p>
+          <p>
+            An interactive graph containing books I've read and reviewed. Also
+            my own stories that are WIP.
+          </p>
         </a>
       </div>
- 
+
       <div class="col-md-6 col-lg-3">
         <a class="card-link" href="{{ url_for('contact') }}">
           <span class="tag contact">reach</span>
@@ -80,9 +93,8 @@ eternally vibe-coding this website<span class="cursor"></span></pre>
           <p>Get in touch, collaborate, or just send a friendly message :p</p>
         </a>
       </div>
- 
     </div>
   </div>
 </main>
- 
+
 {% endblock %}

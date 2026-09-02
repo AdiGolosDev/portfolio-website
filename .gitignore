@@ -6,3 +6,6 @@ node_modules/
 .env
 venv/
 *.json
+.env
+.sqlite
+tempCodeRunnerFile*

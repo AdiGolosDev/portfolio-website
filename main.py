@@ -1,14 +1,20 @@
 import json
 import os
+import random
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ABOUT_FILES_PATH = os.path.join(BASE_DIR, "data", "about_files.json")
+QUOTES_PATH = os.path.join(BASE_DIR, "data", "quotes.json")
 
 def load_about_files():
     with open(ABOUT_FILES_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def load_quotes():
+    with open(QUOTES_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def list_files_text(files):
@@ -44,7 +50,8 @@ def run_command(cmd, files):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    quote = random.choice(load_quotes())
+    return render_template("index.html", quote=quote)
 
 @app.route("/about")
 def about():

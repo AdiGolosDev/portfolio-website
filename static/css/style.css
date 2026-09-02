@@ -362,10 +362,28 @@ a{ color:inherit; }
 }
 
 .term-body-lg{
-  padding:2.25rem 2.5rem 2.5rem;
+  padding:2.25rem 2.5rem 0;
   font-family:'JetBrains Mono', monospace;
   font-size:1.02rem;
-  min-height:360px;
+  height:560px;
+  max-height:70vh;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--surface1) transparent;
+}
+.term-body-lg::-webkit-scrollbar{
+  width:10px;
+}
+.term-body-lg::-webkit-scrollbar-track{
+  background:transparent;
+}
+.term-body-lg::-webkit-scrollbar-thumb{
+  background-color:var(--surface1);
+  border-radius:6px;
+  border:2px solid var(--base);
+}
+.term-body-lg::-webkit-scrollbar-thumb:hover{
+  background-color:var(--overlay0);
 }
 
 .term-line{
@@ -415,6 +433,11 @@ a{ color:inherit; }
   display:flex;
   align-items:center;
   margin-top:1.4rem;
+  position:sticky;
+  bottom:0;
+  background:var(--base);
+  padding:0.9rem 0 1.25rem;
+  border-top:1px solid var(--surface1);
 }
 .term-input{
   flex:1;
